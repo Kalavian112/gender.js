@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Gender.js</title>
+		<link rel="stylesheet" href="style.css" type="text/css">
+	</head>
+	<body>
+		<h1>Gender.js test page</h1>
+		<input type="number" placeholder="Seed" id="gender-input">
+		<button onClick="createGender()">Create Gender</button>
+		<select id="random-seed"><option value="t">Hash Seed</option><option value="f">Don't Hash Seed</option></select>
+		<p id="gender-info">Gender Info</p>
+		<button onClick="tickGender()">Tick</button>
+		<button onClick="for(let i=0;i<100;i++){tickGender();}">Tick x100</button>
+		<p id="gender-tick-info">Tick Info</p>
+		<script src="gender.js"></script>
+		<script>
+// Test page script (spaghetti code incoming)
+let genderInput = document.getElementById("gender-input");
+let genderInfo = document.getElementById("gender-info");
+let tickInfo = document.getElementById("gender-tick-info");
+let seedInput = document.getElementById("random-seed");
+let tickNumber;
+let transitionString;
+let createdGender;
+function createGender(){
+	deterSeed = parseInt(genderInput.value)|0;
+	tickNumber = 0;
+	transitionString = "<br>Transitions:";
+	if(seedInput.value=="t"){
+		for(let i=0;i<1000;i++){
+			deterRand();
+		}
+	}
+	createdGender = new Gender(deterSeed);
+	updateGenderInfo();
+}
+function tickGender(){
+	tickNumber++;
+	let a=createdGender.tick(0);
+	if(a>0){
+		transitionString+="<br>Transitioned into label "+createdGender.getLabel()+" on tick "+tickNumber;
+	}
+	if(a==1){transitionString+=" (dysphoria)";}
+	if(a==2){transitionString+=" (fluid)";}
+	updateGenderInfo();
+}
+function updateGenderInfo(){
+	let adjFluid = Math.floor((createdGender.fluid*createdGender.fluid*createdGender.fluid)/0x7FFFFFF*100000)/1000
+	genderInfo.innerHTML = "Gender Label: "+createdGender.getLabel()+"<br>Masculinity: "+createdGender.masc+"/255<br>Femininity: "+createdGender.fem+"/255<br>Dysphoria: "+createdGender.dys+"/255<br>Fluidity: "+createdGender.fluid+"/255 (chance: ~"+adjFluid+"%)";
+	tickInfo.innerHTML = "Tick: "+tickNumber+transitionString;
+}
+		</script>
+	</body>
+</html>
